@@ -14,6 +14,6 @@ struct APIModel: Codable  {
 nonisolated
 struct News: Codable, Hashable {
     let title: String
-    let titleImageUrl: URL
+    let titleImageUrl: URL?
     let fullUrl: URL
 }
