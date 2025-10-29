@@ -22,4 +22,12 @@ extension NewsViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }
+    
+    func makeActivityIndicator() -> UIActivityIndicatorView {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .systemBlue
+        spinner.hidesWhenStopped = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }
 }

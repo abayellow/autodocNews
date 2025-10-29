@@ -10,20 +10,21 @@ import Combine
 
 final class NewsViewController: UIViewController {
     typealias DataSource = UICollectionViewDiffableDataSource<Int, News>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, News>
     
     private lazy var collectionView = makeCollectionView()
-    private var dataSource: DataSource?
+    private lazy var activityIndicator = makeActivityIndicator()
     
+    private var dataSource: DataSource?
     private let viewModel = NewsViewModel()
     private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation(title: "Новости")
-        configureConstraints()
+        configureViews()
         configureDataSource()
         bindViewModel()
+
         viewModel.loadNextPage()
     }
     
@@ -31,7 +32,12 @@ final class NewsViewController: UIViewController {
         viewModel.$news
             .receive(on: RunLoop.main)
             .sink { [weak self] news in
-                self?.applySnapshot(with: news)
+                guard let self = self else { return }
+                if !news.isEmpty {
+                    self.activityIndicator.stopAnimating()
+                    self.collectionView.isHidden = false
+                }
+                self.applySnapshot(with: news)
             }
             .store(in: &cancellables)
         
@@ -39,6 +45,36 @@ final class NewsViewController: UIViewController {
             .compactMap { $0?.fullUrl }
             .sink { [weak self] url in self?.openWeb(url) }
             .store(in: &cancellables)
+    }
+}
+
+
+private extension NewsViewController {
+    func configureDataSource() {
+        dataSource = collectionView.makeDiffableDataSource { collectionView, indexPath, news in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! NewsCell
+            cell.configure(item: news)
+            return cell
+        }
+    }
+    
+    func applySnapshot(with items: [News]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, News>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(items)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func configureViews() {
+        activityIndicator.startAnimating()
+        collectionView.isHidden = true
+        
+        view.addSubview(collectionView)
+        collectionView.pinToEdges(of: view, top: view.safeAreaLayoutGuide.topAnchor)
+        
+        view.addSubview(activityIndicator)
+        activityIndicator.pinToCenter(of: view)
+      
     }
 }
 
@@ -57,23 +93,3 @@ extension NewsViewController: UICollectionViewDelegate {
         viewModel.selectNews(at: indexPath.item)
     }
 }
-
-private extension NewsViewController {
-    func configureDataSource() {
-        dataSource = collectionView.makeDiffableDataSource { collectionView, indexPath, news in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! NewsCell
-            cell.configure(item: news)
-            return cell
-        }
-    }
-    
-    func applySnapshot(with items: [News]) {
-        collectionView.applySnapshot(items, dataSource: dataSource)
-    }
-    
-    func configureConstraints() {
-        view.addSubview(collectionView)
-        collectionView.pinToEdges(of: view, top: view.safeAreaLayoutGuide.topAnchor)
-    }
-}
-
