@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+enum APISource {
+    static let endpoint = "https://webapi.autodoc.ru/api/news/1/15"
+}
