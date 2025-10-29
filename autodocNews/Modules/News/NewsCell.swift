@@ -26,15 +26,25 @@ final class NewsCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError() }
     
     func configure(item: News) {
-        imageView.setImage(from: item.titleImageUrl) { [weak self] image in
-            guard let self, let _ = image else { return }
+        if let url = item.titleImageUrl {
             
-            UIView.transition(with: contentView, duration: 0.3, options: .transitionCrossDissolve) {
-                self.shimmerView.stopAnimating()
-                self.shimmerView.isHidden = true
-                self.titleLabel.text = item.title
+            imageView.setImage(from: url) { [weak self] image in
+                guard let self else { return }
+                
+                UIView.transition(with: self.contentView, duration: 0.3, options: .transitionCrossDissolve) {
+                    self.shimmerView.stopAnimating()
+                    self.shimmerView.isHidden = true
+                    self.titleLabel.text = item.title
+                }
             }
+        } else {
+            imageView.image = UIImage(named: "autodoc")
+            imageView.contentMode = .scaleAspectFit
+            shimmerView.stopAnimating()
+            shimmerView.isHidden = true
+            titleLabel.text = item.title
         }
+        
     }
     
     override func prepareForReuse() {
