@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NetworkService  {
+final class NetworkService  {
     private let session: URLSession
 
       init() {
@@ -21,7 +21,6 @@ class NetworkService  {
         guard let request = RequestBuilder.createURLRequest(endpoint) else {
             throw NetworkError.invalidRequest
         }
-        
         
         let (data, response) = try await session.data(for: request)
 
