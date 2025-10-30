@@ -39,7 +39,6 @@ final class NewsCell: UICollectionViewCell {
             }
         } else {
             imageView.image = UIImage(named: "autodoc")
-            imageView.contentMode = .scaleAspectFit
             shimmerView.stopAnimating()
             shimmerView.isHidden = true
             titleLabel.text = item.title
