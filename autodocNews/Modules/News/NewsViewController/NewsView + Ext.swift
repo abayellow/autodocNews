@@ -10,10 +10,7 @@ import UIKit
 
 extension NewsViewController {
     func makeCollectionView() -> UICollectionView {
-        let collectionView = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: NewsCollectionLayout.createLayout()
-        )
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: NewsCollectionLayout.createLayout())
         collectionView.register(NewsCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.backgroundColor = .systemBackground
         collectionView.contentInsetAdjustmentBehavior = .automatic

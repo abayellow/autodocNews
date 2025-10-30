@@ -10,7 +10,6 @@ import UIKit
 private var imageTaskKey: UInt8 = 0
 
 extension UIImageView {
-    
     private var currentTask: Task<Void, Never>? {
         get { objc_getAssociatedObject(self, &imageTaskKey) as? Task<Void, Never> }
         set { objc_setAssociatedObject(self, &imageTaskKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }

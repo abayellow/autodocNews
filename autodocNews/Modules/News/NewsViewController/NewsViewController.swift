@@ -48,8 +48,19 @@ final class NewsViewController: UIViewController {
     }
 }
 
-
 private extension NewsViewController {
+    func configureViews() {
+        activityIndicator.startAnimating()
+        collectionView.isHidden = true
+        
+        view.addSubview(collectionView)
+        collectionView.pinToEdges(of: view)
+        
+        view.addSubview(activityIndicator)
+        activityIndicator.pinToCenter(of: view)
+      
+    }
+    
     func configureDataSource() {
         dataSource = collectionView.makeDiffableDataSource { collectionView, indexPath, news in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! NewsCell
@@ -59,22 +70,7 @@ private extension NewsViewController {
     }
     
     func applySnapshot(with items: [News]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, News>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(items)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-    }
-    
-    func configureViews() {
-        activityIndicator.startAnimating()
-        collectionView.isHidden = true
-        
-        view.addSubview(collectionView)
-        collectionView.pinToEdges(of: view, top: view.safeAreaLayoutGuide.topAnchor)
-        
-        view.addSubview(activityIndicator)
-        activityIndicator.pinToCenter(of: view)
-      
+        collectionView.applySnapshot(items, dataSource: dataSource)
     }
 }
 
