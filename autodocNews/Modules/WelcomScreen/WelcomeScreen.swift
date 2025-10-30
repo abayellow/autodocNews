@@ -8,28 +8,14 @@
 import UIKit
 
 final class WelcomeViewController: UIViewController {
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "StartIcon"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Autodoc"
-        label.font = .systemFont(ofSize: 36, weight: .bold)
-        label.textColor = .systemBlue
-        label.textAlignment = .center
-        label.alpha = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private let logoImageView =  UIImageView()
+    private let titleLabel = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setuplogoImageView()
+        setupTitleLabel()
         setupViews()
         animateLogo()
         
@@ -37,10 +23,12 @@ final class WelcomeViewController: UIViewController {
             self?.goToMainScreen()
         }
     }
+}
 
-    private func setupViews() {
-        view.addSubview(logoImageView)
-        view.addSubview(titleLabel)
+private extension WelcomeViewController {
+    func setupViews() {
+        view.addView(logoImageView)
+        view.addView(titleLabel)
         
         NSLayoutConstraint.activate([
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -52,8 +40,20 @@ final class WelcomeViewController: UIViewController {
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
+    func setuplogoImageView() {
+        logoImageView.image = UIImage(named: "StartIcon")
+        logoImageView.contentMode = .scaleAspectFit
+    }
     
-    private func animateLogo() {
+    func setupTitleLabel() {
+        titleLabel.text = "Autodoc"
+        titleLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        titleLabel.textColor = .systemBlue
+        titleLabel.textAlignment = .center
+        titleLabel.alpha = 0
+    }
+    
+    func animateLogo() {
         logoImageView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         
         UIView.animate(withDuration: 1.0, delay: 0, options: [.curveEaseOut], animations: {
@@ -62,7 +62,7 @@ final class WelcomeViewController: UIViewController {
         })
     }
     
-    private func goToMainScreen() {
+    func goToMainScreen() {
         let mainVC = NewsViewController()
         mainVC.modalTransitionStyle = .crossDissolve
         mainVC.modalPresentationStyle = .fullScreen
